@@ -1,0 +1,202 @@
+[
+    {
+        "title": "O Nome do Vento",
+        "subtitle": "Crônica do Matador do Rei - Dia 1",
+        "author": "Patrick Rothfuss",
+        "description": "A história de Kvothe, um mágico lendário, contada em suas próprias palavras.",
+        "status": "completed",
+        "category": "book",
+        "isPublic": true,
+        "imageCover": "nome_do_vento.jpg"
+    },
+
+    {
+        "title": "A Revolução dos Bichos",
+        "author": "George Orwell",
+        "description": "Uma sátira política sobre uma granja tomada por animais.",
+        "status": "completed",
+        "category": "book",
+        "isPublic": true,
+        "imageCover": "revolucao_bichos.jpg"
+    },
+
+    {
+        "title": "Interstellar",
+        "author": "Christopher Nolan",
+        "description": "Exploradores viajam através de um buraco de minhoca em busca de um novo lar para a humanidade.",
+        "status": "completed",
+        "category": "movie",
+        "isPublic": true,
+        "imageCover": "interstellar.jpg"
+    },
+
+    {
+        "title": "Spirited Away",
+        "author": "Studio Ghibli",
+        "description": "Chihiro precisa sobreviver no mundo espiritual para salvar seus pais.",
+        "status": "completed",
+        "category": "movie",
+        "isPublic": true,
+        "imageCover": "spirited_away.jpg"
+    },
+
+    {
+        "title": "One Piece",
+        "author": "Eiichiro Oda",
+        "description": "A jornada de Monkey D. Luffy para se tornar o Rei dos Piratas.",
+        "status": "inProgress",
+        "category": "manga",
+        "isPublic": true,
+        "imageCover": "one_piece.jpg"
+    },
+
+    {
+        "title": "Jujutsu Kaisen",
+        "author": "Gege Akutami",
+        "description": "Yuji Itadori enfrenta maldições após ingerir um dedo do Rei das Maldições.",
+        "status": "inProgress",
+        "category": "manga",
+        "isPublic": true,
+        "imageCover": "jujutsu_kaisen.jpg"
+    },
+
+    {
+        "title": "Deep Learning Illustrated",
+        "author": "Jon Krohn",
+        "description": "Uma introdução visual e acessível ao Deep Learning.",
+        "status": "completed",
+        "category": "ebook",
+        "isPublic": false,
+        "imageCover": "deep_learning_illustrated.jpg"
+    },
+
+    {
+        "title": "Clean Architecture",
+        "author": "Robert C. Martin",
+        "description": "Princípios para criar sistemas sustentáveis e escaláveis.",
+        "status": "completed",
+        "category": "ebook",
+        "isPublic": false,
+        "imageCover": "clean_architecture.jpg"
+    },
+
+    {
+        "title": "Sword Art Online",
+        "author": "Reki Kawahara",
+        "description": "Jogadores ficam presos em um MMORPG mortal.",
+        "status": "inProgress",
+        "category": "novel",
+        "isPublic": true,
+        "imageCover": "sao_novel.jpg"
+    },
+
+    {
+        "title": "Re:Zero",
+        "author": "Tappei Nagatsuki",
+        "description": "Subaru é transportado para outro mundo e descobre que pode voltar no tempo sempre que morre.",
+        "status": "inProgress",
+        "category": "novel",
+        "isPublic": true,
+        "imageCover": "rezero_novel.jpg"
+    },
+
+    {
+        "title": "Batman: Year One",
+        "author": "Frank Miller",
+        "description": "A origem moderna do Batman em Gotham City.",
+        "status": "completed",
+        "category": "comic",
+        "isPublic": true,
+        "imageCover": "batman_year_one.jpg"
+    },
+
+    {
+        "title": "Spider-Man: Blue",
+        "author": "Jeph Loeb",
+        "description": "Peter Parker relembra seu relacionamento com Gwen Stacy.",
+        "status": "completed",
+        "category": "comic",
+        "isPublic": true,
+        "imageCover": "spiderman_blue.jpg"
+    },
+
+    {
+        "title": "Stranger Things",
+        "author": "Duffer Brothers",
+        "description": "Mistério e terror envolvendo dimensões paralelas.",
+        "status": "inProgress",
+        "category": "series",
+        "isPublic": true,
+        "imageCover": "stranger_things.jpg"
+    },
+
+    {
+        "title": "Arcane",
+        "author": "Riot Games / Fortiche",
+        "description": "A ascensão de Jinx e Vi em Piltover e Zaun.",
+        "status": "completed",
+        "category": "series",
+        "isPublic": true,
+        "imageCover": "arcane.jpg"
+    },
+
+    {
+        "title": "Hamilton",
+        "author": "Lin-Manuel Miranda",
+        "description": "Um musical sobre a vida de Alexander Hamilton.",
+        "status": "completed",
+        "category": "theater",
+        "isPublic": true,
+        "imageCover": "hamilton.jpg"
+    },
+
+    {
+        "title": "The Phantom of the Opera",
+        "author": "Andrew Lloyd Webber",
+        "description": "Um gênio misterioso assombra a Ópera de Paris.",
+        "status": "completed",
+        "category": "theater",
+        "isPublic": true,
+        "imageCover": "fantasma_opera.jpg"
+    },
+
+    {
+        "title": "Duna",
+        "author": "Frank Herbert",
+        "description": "A épica jornada de Paul Atreides em Arrakis.",
+        "status": "completed",
+        "category": "audiobook",
+        "isPublic": true,
+        "imageCover": "duna_audio.jpg"
+    },
+
+    {
+        "title": "Sherlock Holmes Collection",
+        "author": "Arthur Conan Doyle",
+        "description": "Um clássico narrado em versão completa para áudio.",
+        "status": "completed",
+        "category": "audiobook",
+        "isPublic": false,
+        "imageCover": "sherlock_audio.jpg"
+    },
+
+    {
+        "title": "Harry Potter – A Criança Perdida",
+        "author": "Luna Silver",
+        "description": "Uma nova aventura anos após a Batalha de Hogwarts.",
+        "status": "inProgress",
+        "category": "fanfic",
+        "isPublic": true,
+        "imageCover": "hp_fanfic.jpg"
+    },
+
+    {
+        "title": "My Hero Academia: Renascimento",
+        "author": "StarDragon",
+        "description": "Um estudante comum reencarna no universo de MHA com um novo poder.",
+        "status": "inProgress",
+        "category": "fanfic",
+        "isPublic": true,
+        "imageCover": "mha_fanfic.jpg"
+    }
+]

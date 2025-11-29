@@ -6,6 +6,7 @@ const globalErrorHandler = require('./controllers/errorController')
 const mongoose = require('mongoose');
 const workRouters = require('./routes/workRoutes');
 const characterRoutes = require('./routes/characterRoutes')
+const authRoutes = require('./routes/authRoutes')
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(express.static(`${__dirname}/public`));
 
 // ROTAS
+app.use('/api/auth', authRoutes);
 app.use('/api/works', workRouters);
 app.use('/api/characters', characterRoutes);
 
