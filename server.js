@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const workRouters = require('./routes/workRoutes');
 const characterRoutes = require('./routes/characterRoutes')
 const authRoutes = require('./routes/authRoutes')
+const chartRoutes = require('./routes/chartRoutes');
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(express.static(`${__dirname}/public`));
 app.use('/api/auth', authRoutes);
 app.use('/api/works', workRouters);
 app.use('/api/characters', characterRoutes);
+app.use('/api/charts', chartRoutes);
 
 // BANCO DE DADOS
 const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);

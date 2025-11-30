@@ -14,5 +14,42 @@ mongoose.connect(DB)
   .catch(err => console.log('DB connection error:', err));
 
   //READ JSON FILE
-const works = JSON.parse(fs.readFileSync(`${__dirname}/works-simple.json`, 'utf-8'));
+const works = JSON.parse(fs.readFileSync(`${__dirname}/data/works-simple.json`, 'utf-8'));
+
+//IMPORT DATA INTO DB
+const importData = async() =>{
+    try {
+        await Work.create(works);
+        console.log('Data successfully loaded!');
+    } catch (error) {
+        console.log(error);
+    }
+
+    process.exit();
+}
+
+//DELETE ALL EXISTING DATA FROM DB
+const deleteData = async() =>{
+    try {
+        await Work.deleteMany();
+        console.log('Data successfully deleted!');
+        
+    } catch (error) {
+        console.log(error);
+    } 
+
+    process.exit();
+}
+
+// USING THE TERMINAL TO IMPORT OR DELETE
+if(process.argv[2] === '--import'){
+    importData()
+} else if (process.argv[2] === '--delete'){
+    deleteData();
+}
+
+
+
+// node dev-data/import-dev-data.js --delete
+// node dev-data/import-dev-data.js --import
 

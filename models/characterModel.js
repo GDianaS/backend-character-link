@@ -1,4 +1,3 @@
-// models/characterModel.js
 const mongoose = require('mongoose');
 
 const characterSchema = new mongoose.Schema({
@@ -23,6 +22,11 @@ const characterSchema = new mongoose.Schema({
     status: {
         type: String,
     },
+    // Cor padrão para visualização em charts
+    defaultColor: {
+        type: String,
+        default: '#A8C4F0'
+    },
     // Array de relacionamentos diretos (edges do grafo)
     relationships: [{
         character: {
@@ -31,7 +35,24 @@ const characterSchema = new mongoose.Schema({
         },
         type: {
             type: String,
-            enum: ['family', 'romantic', 'friendship', 'rivalry', 'enemy', 'mentor', 'colleague', 'other']
+            enum: [
+                'family',           // Família
+                'romantic',         // Romântico
+                'friendship',       // Amizade
+                'rivalry',          // Rivalidade
+                'enemy',            // Inimigo
+                'mentor',           // Mentor
+                'colleague',        // Colega
+                'alliance',         // Aliança
+                'conflict',         // Conflito
+                'master-apprentice', // Mestre-Aprendiz
+                'parent-child',     // Pai/Mãe-Filho(a)
+                'siblings',         // Irmãos
+                'lovers',           // Amantes
+                'ex-lovers',        // Ex-amantes
+                'unrequited',       // Amor não correspondido
+                'other'             // Outro
+            ]
         },
         description: String,
         status: {
@@ -42,6 +63,12 @@ const characterSchema = new mongoose.Schema({
         isDirectional: {
             type: Boolean,
             default: false
+        },
+        intensity: {
+            type: Number,
+            min: 1,
+            max: 5,
+            default: 3
         }
     }]
 }, { timestamps: true });

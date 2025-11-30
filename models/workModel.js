@@ -23,8 +23,8 @@ const workSchema = new mongoose.Schema({
         type: String,
         required: true,
         enum: {
-            values: ['movie', 'serie', 'book', 'comic', 'novel', 'ebook'],
-            message: 'Status is either movie, serie, book, comic, novel or ebook'
+            values: ['movie', 'serie', 'book','series','comic', 'novel', 'ebook','manga', 'fanfic', 'theater','audiobook'],
+            message: 'Status is either movie, serie, book, comic, novel, ebook, series, manga, fanfic, theater or audiobook'
         }
     },
     isPublic: {

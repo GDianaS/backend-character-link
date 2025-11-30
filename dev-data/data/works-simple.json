@@ -11,6 +11,17 @@
     },
 
     {
+        "title": "O Orfanato da Srta. Peregrine Para Crianças Peculiares",
+        "subtitle": "Cidade dos Etéreos",
+        "author": "Ransom Riggs",
+        "description": "Cidade dos etéreos dá sequência ao celebrado O orfanato da srta. Peregrine para crianças peculiares, em que o jovem Jacob Portman, para descobrir a verdade sobre a morte do avô, segue pistas que o levam a um antigo lar para crianças em uma ilha galesa. O orfanato abriga crianças com dons sobrenaturais, protegidas graças à poderosa magia da diretora, a srta. Peregrine.",
+        "status": "inProgress",
+        "category": "book",
+        "isPublic": true,
+        "imageCover": "nome_do_vento.jpg"
+    },
+
+    {
         "title": "A Revolução dos Bichos",
         "author": "George Orwell",
         "description": "Uma sátira política sobre uma granja tomada por animais.",
