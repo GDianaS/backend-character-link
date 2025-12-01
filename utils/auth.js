@@ -12,7 +12,9 @@ const generateToken = (userId) => {
 // Verificar token JWT
 const verifyToken = (token) => {
   try {
-    return jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("🔐 Token decodificado:", decoded); // DEBUG
+    return decoded;
   } catch (error) {
     return null;
   }
@@ -32,6 +34,7 @@ const authMiddleware = (req, res, next) => {
     return res.status(401).json({ error: 'Token inválido' });
   }
 
+  console.log("✅ Auth Middleware - userId:", decoded.userId); // DEBUG
   req.userId = decoded.userId;
   next();
 };

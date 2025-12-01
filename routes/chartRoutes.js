@@ -10,7 +10,7 @@ router.get('/work/:workId', chartController.getChartsByWork);
 router.get('/:id', optionalAuth, chartController.getChart);
 
 // Rotas protegidas (requerem autenticação)
-router.use(authMiddleware);
+router.use(authMiddleware); // Aplica auth para todas as rotas abaixo
 
 router.get('/my/charts', chartController.getMyCharts);
 router.post('/', chartController.createChart);

@@ -1,21 +1,19 @@
 const express = require('express');
-const workController = require('../controllers/workController')
+const workController = require('../controllers/workController');
+const { authMiddleware, optionalAuth } = require('../utils/auth');
 
 const router = express.Router();
 
-router
-    .route('/')
-    .get(workController.getAllWorks)
-    .post(workController.createWork);
+// Rotas públicas (com autenticação opcional para mostrar creator)
+router.get('/', optionalAuth, workController.getAllWorks);
+router.get('/:id', optionalAuth, workController.getWork);
+router.get('/:id/characters', workController.getWorkCharacters);
 
-router
-    .route('/:id')
-    .get(workController.getWork)
-    .patch(workController.updateWork)
-    .delete(workController.deleteWork); // TO FIX
+// Rotas protegidas (requerem autenticação)
+router.use(authMiddleware);
 
-router
-    .route('/:id/characters')
-    .get(workController.getWorkCharacters);
+router.post('/', workController.createWork);
+router.patch('/:id', workController.updateWork);
+router.delete('/:id', workController.deleteWork);
 
-module.exports = router; 
+module.exports = router;

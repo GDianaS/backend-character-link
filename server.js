@@ -28,6 +28,23 @@ app.use('/api/works', workRouters);
 app.use('/api/characters', characterRoutes);
 app.use('/api/charts', chartRoutes);
 
+
+// ERROR GLOBAL
+app.use((err, req, res, next) => {
+    console.error('🔥 Erro capturado:', err);
+    
+    err.statusCode = err.statusCode || 500;
+    err.status = err.status || 'error';
+
+    res.status(err.statusCode).json({
+        status: err.status,
+        message: err.message,
+        stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
+});
+
+
+
 // BANCO DE DADOS
 const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);
 

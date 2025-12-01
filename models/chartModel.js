@@ -26,39 +26,14 @@ const chartSchema = new mongoose.Schema({
     // Dados do ReactFlow
     // nós, ligações e posição da câmera
     flowData: {
-        nodes: [{
-            id: String,
-            type: String,
-            position: {
-                x: Number,
-                y: Number
-            },
-            data: mongoose.Schema.Types.Mixed,
-            style: mongoose.Schema.Types.Mixed,
-            // Referência ao personagem real
-            // Caso esse node represente um personagem real,
-            // aqui fica o id dele
-            characterId: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Character'
-            }
-        }],
-        edges: [{ // Lista de conexões (edges)
-            id: String, 
-            source: String, // id do node de onde a conexão sai
-            target: String, // id do node onde a conexão termina
-            type: String,
-            label: String,
-            style: mongoose.Schema.Types.Mixed,
-            // Tipo de relacionamento
-            relationshipType: {
-                type: String,
-                enum: ['family', 'romantic', 'friendship', 'rivalry', 'enemy', 'mentor', 'colleague', 'alliance', 'conflict', 'master-apprentice', 'parent-child', 'siblings', 'lovers', 'ex-lovers', 'unrequited', 'other']
-            },
-            description: String // descrição opcional do relacionamento
-        }],
-
-        // Posição da câmera e zoom da visualização
+        nodes: {
+            type: [mongoose.Schema.Types.Mixed], // ✅ Array de objetos genéricos
+            default: []
+        },
+        edges: {
+            type: [mongoose.Schema.Types.Mixed], // ✅ Array de objetos genéricos
+            default: []
+        },
         viewport: {
             x: { type: Number, default: 0 },
             y: { type: Number, default: 0 },

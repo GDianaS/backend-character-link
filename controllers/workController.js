@@ -2,34 +2,87 @@ const Work = require('./../models/workModel');
 const Character = require('./../models/characterModel');
 const catchAsync = require ('./../utils/catchAsync');
 const AppError = require ('./../utils/appError');
+const APIFeatures = require('./../utils/apiFeatures')
 
 // OBRAS
+// exports.getAllWorks = catchAsync(async (req, res, next) => {
+//     const works = await Work.find();
+
+//     res.status(200).json({
+//         status: 'success',
+//         results: works.length,
+//         data: {
+//             works
+//         }
+//     });
+// });
+
+
+// TODAS AS OBRAS COM PAGINAÇÃO
 exports.getAllWorks = catchAsync(async (req, res, next) => {
-    const works = await Work.find();
+
+    // Criar features de filtragem, sort, fields e paginação
+    const features = new APIFeatures(Work.find(), req.query)
+        .filter()
+        .sort()
+        .limitFields()
+        .paginate();
+
+    // Executar query final
+    const works = await features.query;
+
+    // Contar total para paginação (sem filter fields)
+    const totalWorks = await Work.countDocuments();
 
     res.status(200).json({
-        status: 'success',
+        status: "success",
         results: works.length,
+        total: totalWorks,
+        page: req.query.page * 1 || 1,
+        limit: req.query.limit * 1 || 100,
         data: {
             works
         }
     });
 });
 
+// exports.createWork = catchAsync(async (req, res, next) => {
+//     const newWork = await Work.create(req.body);
+
+//     res.status(200).json({
+//         status: 'success',
+//         data: {
+//             work: newWork
+//         }
+//     });
+// });
+
 exports.createWork = catchAsync(async (req, res, next) => {
-    const newWork = await Work.create(req.body);
+
+    // adiciona automaticamente o criador
+    const newWork = await Work.create({
+        ...req.body,
+        creator: req.userId || null
+    });
+
+    const populated = await Work.findById(newWork._id)
+        .populate('creator', 'name email avatar');
+
+    console.log("NEWWORK", newWork);
+    console.log("POPULATED", populated);
+    console.log("USER ID",req.userId);
 
     res.status(200).json({
         status: 'success',
-        data: {
-            work: newWork
-        }
+        data: { work: populated }
     });
 });
 
-// BUSCAR OBRA POR ID - SEM POPULATE
+
+// BUSCAR OBRA POR ID
 exports.getWork = catchAsync(async (req, res, next) => {
-    const work = await Work.findById(req.params.id); // Removido .populate('characters')
+    const work = await Work.findById(req.params.id)
+        .populate('creator', 'name email avatar');
 
     if (!work) {
         return next(new AppError('Obra não encontrada', 404));

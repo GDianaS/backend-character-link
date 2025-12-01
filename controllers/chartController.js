@@ -112,17 +112,63 @@ exports.createChart = catchAsync(async (req, res, next) => {
 });
 
 // EDITAR CHART
+// exports.updateChart = catchAsync(async (req, res, next) => {
+//     const chart = await Chart.findById(req.params.id);
+
+//     if (!chart) {
+//         return next(new AppError('Chart não encontrado', 404));
+//     }
+
+//     // Só o criador pode editar
+//     if (!req.userId || !chart.creator.equals(req.userId)) {
+//         return next(new AppError('Você não tem permissão para editar este chart', 403));
+//     }
+
+//     // Lista de campos permitidos para alteração
+//     const allowedFields = ['title', 'description', 'works', 'flowData', 'settings', 'isPublic'];
+//     const updates = {};
+
+//     // Copia apenas os campos enviados no body
+//     allowedFields.forEach(field => {
+//         if (req.body[field] !== undefined) {
+//             updates[field] = req.body[field];
+//         }
+//     });
+
+//     // Atualiza o chart
+//     const updatedChart = await Chart.findByIdAndUpdate(
+//         req.params.id,
+//         updates,
+//         { new: true, runValidators: true }
+//     ).populate('works', 'title category');
+
+//     res.status(200).json({
+//         status: 'success',
+//         data: { chart: updatedChart }
+//     });
+// });
+
+// EDITAR CHART
 exports.updateChart = catchAsync(async (req, res, next) => {
+    console.log('📝 Atualizando chart:', req.params.id);
+    console.log('📦 Body recebido:', JSON.stringify(req.body, null, 2));
+
     const chart = await Chart.findById(req.params.id);
 
     if (!chart) {
+        console.log('❌ Chart não encontrado');
         return next(new AppError('Chart não encontrado', 404));
     }
 
+    console.log('✅ Chart encontrado:', chart.title);
+
     // Só o criador pode editar
     if (!req.userId || !chart.creator.equals(req.userId)) {
+        console.log('❌ Sem permissão. UserId:', req.userId, 'Creator:', chart.creator);
         return next(new AppError('Você não tem permissão para editar este chart', 403));
     }
+
+    console.log('✅ Permissão verificada');
 
     // Lista de campos permitidos para alteração
     const allowedFields = ['title', 'description', 'works', 'flowData', 'settings', 'isPublic'];
@@ -132,20 +178,31 @@ exports.updateChart = catchAsync(async (req, res, next) => {
     allowedFields.forEach(field => {
         if (req.body[field] !== undefined) {
             updates[field] = req.body[field];
+            console.log(`📌 Campo ${field} será atualizado`);
         }
     });
 
-    // Atualiza o chart
-    const updatedChart = await Chart.findByIdAndUpdate(
-        req.params.id,
-        updates,
-        { new: true, runValidators: true }
-    ).populate('works', 'title category');
+    console.log('📋 Updates a serem aplicados:', Object.keys(updates));
 
-    res.status(200).json({
-        status: 'success',
-        data: { chart: updatedChart }
-    });
+    try {
+        // Atualiza o chart
+        const updatedChart = await Chart.findByIdAndUpdate(
+            req.params.id,
+            updates,
+            { new: true, runValidators: false } // ⚠️ Desabilita validação
+        ).populate('works', 'title category');
+
+        console.log('✅ Chart atualizado com sucesso');
+
+        res.status(200).json({
+            status: 'success',
+            data: { chart: updatedChart }
+        });
+    } catch (error) {
+        console.error('❌ Erro ao atualizar chart:', error);
+        console.error('Stack:', error.stack);
+        return next(new AppError(`Erro ao atualizar: ${error.message}`, 500));
+    }
 });
 
 // EXCLUIR CHART
@@ -170,9 +227,13 @@ exports.deleteChart = catchAsync(async (req, res, next) => {
 });
 
 
-// SALVAR "SNAPSHOT"
+// SALVAR "SNAPSHOT" --> TO FIX 
 exports.saveSnapshot = catchAsync(async (req, res, next) => {
     const { flowData } = req.body;
+
+    // Log para debug
+    console.log('📊 Salvando snapshot para chart:', req.params.id);
+    console.log('📦 FlowData recebido:', JSON.stringify(flowData, null, 2));
 
     const chart = await Chart.findById(req.params.id);
 
@@ -185,14 +246,37 @@ exports.saveSnapshot = catchAsync(async (req, res, next) => {
         return next(new AppError('Você não tem permissão para editar este chart', 403));
     }
 
-    // Atualiza apenas o flowData
-    chart.flowData = flowData;
-    await chart.save();
+    try {
+        // Valida se flowData tem a estrutura mínima esperada
+        if (!flowData || typeof flowData !== 'object') {
+            return next(new AppError('flowData inválido', 400));
+        }
 
-    res.status(200).json({
-        status: 'success',
-        data: { chart }
-    });
+        // Garante que nodes e edges existem (mesmo que vazios)
+        const sanitizedFlowData = {
+            nodes: Array.isArray(flowData.nodes) ? flowData.nodes : [],
+            edges: Array.isArray(flowData.edges) ? flowData.edges : [],
+            viewport: flowData.viewport || { x: 0, y: 0, zoom: 1 }
+        };
+
+        // Atualiza o chart
+        chart.flowData = sanitizedFlowData;
+        chart.stats.totalNodes = sanitizedFlowData.nodes.length;
+        chart.stats.totalEdges = sanitizedFlowData.edges.length;
+        
+        // Salva sem validação completa
+        await chart.save({ validateBeforeSave: false });
+
+        console.log('✅ Snapshot salvo com sucesso');
+
+        res.status(200).json({
+            status: 'success',
+            data: { chart }
+        });
+    } catch (error) {
+        console.error('❌ Erro ao salvar snapshot:', error);
+        return next(new AppError(`Erro ao salvar: ${error.message}`, 500));
+    }
 });
 
 

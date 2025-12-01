@@ -1,10 +1,12 @@
-// models/workModel.js
 const mongoose = require('mongoose');
 
 const workSchema = new mongoose.Schema({
     title: {
         type: String,
         required: [true, 'Uma obra precisa de um título']
+    },
+    subtitle: {
+        type: String
     },
     author: {
         type: String
@@ -28,16 +30,19 @@ const workSchema = new mongoose.Schema({
         }
     },
     isPublic: {
-        type: Boolean
+        type: Boolean,
+        default: false
     },
     imageCover: {
         type: String
     },
-    createdAt: {
-        type: Date,
-        default: Date.now(),
-        select: false
+    creator: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        default: null
     }
+}, { 
+    timestamps: true // Adiciona createdAt e updatedAt automaticamente
 });
 
 const Work = mongoose.model("Work", workSchema);
