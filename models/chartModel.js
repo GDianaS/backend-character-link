@@ -27,11 +27,11 @@ const chartSchema = new mongoose.Schema({
     // nós, ligações e posição da câmera
     flowData: {
         nodes: {
-            type: [mongoose.Schema.Types.Mixed], // ✅ Array de objetos genéricos
+            type: [mongoose.Schema.Types.Mixed], // Array de objetos genéricos
             default: []
         },
         edges: {
-            type: [mongoose.Schema.Types.Mixed], // ✅ Array de objetos genéricos
+            type: [mongoose.Schema.Types.Mixed], // Array de objetos genéricos
             default: []
         },
         viewport: {

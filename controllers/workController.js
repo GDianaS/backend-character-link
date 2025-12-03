@@ -5,21 +5,62 @@ const AppError = require ('./../utils/appError');
 const APIFeatures = require('./../utils/apiFeatures')
 const { supabase, uploadImage, deleteImage } = require('../utils/supabase');
 
-// TODAS AS OBRAS COM PAGINAÇÃO
+// TODAS AS OBRAS COM PAGINAÇÃO + PRIVACIDADE
+// exports.getAllWorks = catchAsync(async (req, res, next) => {
+
+//     // Criar features de filtragem, sort, fields e paginação
+//     const features = new APIFeatures(Work.find(), req.query)
+//         .filter()
+//         .sort()
+//         .limitFields()
+//         .paginate();
+
+//     // Executar query final
+//     const works = await features.query;
+
+//     // Contar total para paginação (sem filter fields)
+//     const totalWorks = await Work.countDocuments();
+
+//     res.status(200).json({
+//         status: "success",
+//         results: works.length,
+//         total: totalWorks,
+//         page: req.query.page * 1 || 1,
+//         limit: req.query.limit * 1 || 100,
+//         data: {
+//             works
+//         }
+//     });
+// });
 exports.getAllWorks = catchAsync(async (req, res, next) => {
+    // Construir filtro base
+    let baseFilter = {};
+
+    if (req.userId) {
+        // Usuário autenticado: pode ver obras públicas OU obras que ele criou
+        baseFilter = {
+            $or: [
+                { isPublic: true },
+                { creator: req.userId }
+            ]
+        };
+    } else {
+        // Convidado: apenas obras públicas
+        baseFilter = { isPublic: true };
+    }
 
     // Criar features de filtragem, sort, fields e paginação
-    const features = new APIFeatures(Work.find(), req.query)
+    const features = new APIFeatures(Work.find(baseFilter), req.query)
         .filter()
         .sort()
         .limitFields()
         .paginate();
 
     // Executar query final
-    const works = await features.query;
+    const works = await features.query.populate('creator', 'name email avatar');
 
-    // Contar total para paginação (sem filter fields)
-    const totalWorks = await Work.countDocuments();
+    // Contar total com o mesmo filtro
+    const totalWorks = await Work.countDocuments(baseFilter);
 
     res.status(200).json({
         status: "success",
@@ -32,6 +73,7 @@ exports.getAllWorks = catchAsync(async (req, res, next) => {
         }
     });
 });
+
 
 // CRIAR OBRA COM IMAGEM
 exports.createWork = catchAsync(async (req, res, next) => {
@@ -88,6 +130,14 @@ exports.getWork = catchAsync(async (req, res, next) => {
         return next(new AppError('Obra não encontrada', 404));
     }
 
+    // Verificar permissão de acesso
+    if (!work.isPublic) {
+        // Se for privada, só o criador pode ver
+        if (!req.userId || work.creator._id.toString() !== req.userId) {
+            return next(new AppError('Você não tem permissão para acessar esta obra', 403));
+        }
+    }
+
     res.status(200).json({
         status: 'success',
         data: {
@@ -105,6 +155,13 @@ exports.getWorkCharacters = catchAsync(async (req, res, next) => {
     if (!work) {
         return next(new AppError('Obra não encontrada', 404));
     }
+
+    // Verificar permissão de acesso
+    // if (!work.isPublic) {
+    //     if (!req.userId || work.creator.toString() !== req.userId) {
+    //         return next(new AppError('Você não tem permissão para acessar esta obra', 403));
+    //     }
+    // }
 
     // Buscar personagens dessa obra
     const characters = await Character.find({ work: id });
