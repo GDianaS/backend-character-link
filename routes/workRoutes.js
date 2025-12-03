@@ -12,6 +12,10 @@ router.get('/:id/characters', workController.getWorkCharacters);
 // Rotas protegidas (requerem autenticação)
 router.use(authMiddleware);
 
+// Estatísticas e obras recentes do usuário
+router.get('/user/stats', workController.getStats);
+router.get('/user/recent', workController.getRecentWorks);
+
 router.post('/', workController.createWork);
 router.patch('/:id', workController.updateWork);
 router.delete('/:id', workController.deleteWork);

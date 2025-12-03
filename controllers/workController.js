@@ -5,20 +5,6 @@ const AppError = require ('./../utils/appError');
 const APIFeatures = require('./../utils/apiFeatures')
 const { supabase, uploadImage, deleteImage } = require('../utils/supabase');
 
-// OBRAS
-// exports.getAllWorks = catchAsync(async (req, res, next) => {
-//     const works = await Work.find();
-
-//     res.status(200).json({
-//         status: 'success',
-//         results: works.length,
-//         data: {
-//             works
-//         }
-//     });
-// });
-
-
 // TODAS AS OBRAS COM PAGINAÇÃO
 exports.getAllWorks = catchAsync(async (req, res, next) => {
 
@@ -46,38 +32,6 @@ exports.getAllWorks = catchAsync(async (req, res, next) => {
         }
     });
 });
-
-// exports.createWork = catchAsync(async (req, res, next) => {
-//     const newWork = await Work.create(req.body);
-
-//     res.status(200).json({
-//         status: 'success',
-//         data: {
-//             work: newWork
-//         }
-//     });
-// });
-
-// exports.createWork = catchAsync(async (req, res, next) => {
-
-//     // adiciona automaticamente o criador
-//     const newWork = await Work.create({
-//         ...req.body,
-//         creator: req.userId || null
-//     });
-
-//     const populated = await Work.findById(newWork._id)
-//         .populate('creator', 'name email avatar');
-
-//     console.log("NEWWORK", newWork);
-//     console.log("POPULATED", populated);
-//     console.log("USER ID",req.userId);
-
-//     res.status(200).json({
-//         status: 'success',
-//         data: { work: populated }
-//     });
-// });
 
 // CRIAR OBRA COM IMAGEM
 exports.createWork = catchAsync(async (req, res, next) => {
@@ -164,24 +118,6 @@ exports.getWorkCharacters = catchAsync(async (req, res, next) => {
     });
 });
 
-// // ATUALIZAR OBRA
-// exports.updateWork = catchAsync(async (req, res, next) => {
-//     const work = await Work.findByIdAndUpdate(req.params.id, req.body, {
-//         new: true,
-//         runValidators: true
-//     });
-
-//     if (!work) {
-//         return next(new AppError('Obra não encontrada', 404));
-//     }
-
-//     res.status(200).json({
-//         status: 'success',
-//         data: {
-//             work
-//         }
-//     });
-// });
 
 // ATUALIZAR OBRA COM IMAGEM
 exports.updateWork = catchAsync(async (req, res, next) => {
@@ -240,22 +176,6 @@ exports.updateWork = catchAsync(async (req, res, next) => {
   });
 });
 
-// // DELETAR OBRA
-// exports.deleteWork = catchAsync(async (req, res, next) => {
-//     const work = await Work.findByIdAndDelete(req.params.id);
-
-//     if (!work) {
-//         return next(new AppError('Obra não encontrada', 404));
-//     }
-
-//     // Deletar todos os personagens associados
-//     await Character.deleteMany({ work: req.params.id });
-
-//     res.status(204).json({
-//         status: 'success',
-//         data: null
-//     });
-// });
 
 // DELETAR OBRA E IMAGEM
 exports.deleteWork = catchAsync(async (req, res, next) => {
@@ -287,5 +207,54 @@ exports.deleteWork = catchAsync(async (req, res, next) => {
 
 // STATS
 // contagem das obras, dos personagens, número de charts
+exports.getStats = catchAsync(async (req, res, next) => {
+  if (!req.userId) {
+    return next(new AppError('Você precisa estar autenticado', 401));
+  }
 
+  // Total de obras do usuário
+  const totalWorks = await Work.countDocuments({ creator: req.userId });
+
+  // Total de personagens nas obras do usuário
+  const userWorks = await Work.find({ creator: req.userId }).select('_id');
+  const workIds = userWorks.map(work => work._id);
+  const totalCharacters = await Character.countDocuments({ work: { $in: workIds } });
+
+  // Total de charts do usuário
+  const Chart = require('./../models/chartModel');
+  const totalCharts = await Chart.countDocuments({ creator: req.userId });
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      stats: {
+        totalWorks,
+        totalCharacters,
+        totalCharts
+      }
+    }
+  });
+});
+
+// OBRAS RECENTES DO USUÁRIO
+exports.getRecentWorks = catchAsync(async (req, res, next) => {
+  if (!req.userId) {
+    return next(new AppError('Você precisa estar autenticado', 401));
+  }
+
+  const limit = req.query.limit * 1 || 5;
+
+  const recentWorks = await Work.find({ creator: req.userId })
+    .sort('-createdAt')
+    .limit(limit)
+    .select('title category imageCover createdAt');
+
+  res.status(200).json({
+    status: 'success',
+    results: recentWorks.length,
+    data: {
+      works: recentWorks
+    }
+  });
+});
 

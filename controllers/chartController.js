@@ -111,42 +111,6 @@ exports.createChart = catchAsync(async (req, res, next) => {
     });
 });
 
-// EDITAR CHART
-// exports.updateChart = catchAsync(async (req, res, next) => {
-//     const chart = await Chart.findById(req.params.id);
-
-//     if (!chart) {
-//         return next(new AppError('Chart não encontrado', 404));
-//     }
-
-//     // Só o criador pode editar
-//     if (!req.userId || !chart.creator.equals(req.userId)) {
-//         return next(new AppError('Você não tem permissão para editar este chart', 403));
-//     }
-
-//     // Lista de campos permitidos para alteração
-//     const allowedFields = ['title', 'description', 'works', 'flowData', 'settings', 'isPublic'];
-//     const updates = {};
-
-//     // Copia apenas os campos enviados no body
-//     allowedFields.forEach(field => {
-//         if (req.body[field] !== undefined) {
-//             updates[field] = req.body[field];
-//         }
-//     });
-
-//     // Atualiza o chart
-//     const updatedChart = await Chart.findByIdAndUpdate(
-//         req.params.id,
-//         updates,
-//         { new: true, runValidators: true }
-//     ).populate('works', 'title category');
-
-//     res.status(200).json({
-//         status: 'success',
-//         data: { chart: updatedChart }
-//     });
-// });
 
 // EDITAR CHART
 exports.updateChart = catchAsync(async (req, res, next) => {
@@ -294,4 +258,27 @@ exports.getChartsByWork = catchAsync(async (req, res, next) => {
         results: charts.length,
         data: { charts }
     });
+});
+
+// CHARTS RECENTES DO USUÁRIO
+exports.getRecentCharts = catchAsync(async (req, res, next) => {
+  if (!req.userId) {
+    return next(new AppError('Você precisa estar autenticado', 401));
+  }
+
+  const limit = req.query.limit * 1 || 5;
+
+  const recentCharts = await Chart.find({ creator: req.userId })
+    .sort('-createdAt')
+    .limit(limit)
+    .select('title description works createdAt stats')
+    .populate('works', 'title category');
+
+  res.status(200).json({
+    status: 'success',
+    results: recentCharts.length,
+    data: {
+      charts: recentCharts
+    }
+  });
 });

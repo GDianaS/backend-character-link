@@ -12,6 +12,7 @@ router.get('/:id', optionalAuth, chartController.getChart);
 // Rotas protegidas (requerem autenticação)
 router.use(authMiddleware); // Aplica auth para todas as rotas abaixo
 
+router.get('/user/recent', chartController.getRecentCharts);
 router.get('/my/charts', chartController.getMyCharts);
 router.post('/', chartController.createChart);
 router.patch('/:id', chartController.updateChart);
